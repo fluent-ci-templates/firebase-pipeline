@@ -25,11 +25,13 @@ fluentci run firebase_pipeline
 
 | Job         | Description                                                |
 |-------------|------------------------------------------------------------|
+| build       | Build your project.                                        |
 | deploy      | Deploy to firebase hosting.                                |
 
 ```graphql
+build(src: String!): String
+
 deploy(
-    directory: String!, 
     src: String!, 
     token: String!
 ): String
@@ -42,5 +44,5 @@ You can also use this pipeline programmatically:
 ```typescript
 import { deploy } from "https://pkg.fluentci.io/firebase_pipeline@v0.1.0/mod.ts";
 
-await deploy(".", "dist");
+await deploy(".");
 ```

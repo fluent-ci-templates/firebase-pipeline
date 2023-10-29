@@ -44,7 +44,7 @@ export const build = async (src = ".") => {
   return "Done";
 };
 
-export const deploy = async (src = ".", directory?: string, token?: string) => {
+export const deploy = async (src = ".", token?: string) => {
   await connect(async (client: Client) => {
     const context = client.host().directory(src);
     const ctr = client
@@ -63,8 +63,6 @@ export const deploy = async (src = ".", directory?: string, token?: string) => {
       .withExec([
         "firebase",
         "deploy",
-        "--only",
-        Deno.env.get("DEPLOY_DIRECTORY") || directory || ".",
         "--non-interactive",
         "--token",
         Deno.env.get("FIREBASE_TOKEN") || token!,
@@ -76,11 +74,7 @@ export const deploy = async (src = ".", directory?: string, token?: string) => {
   return "Done";
 };
 
-export type JobExec = (
-  src?: string,
-  directory?: string,
-  token?: string
-) => Promise<string>;
+export type JobExec = (src?: string, token?: string) => Promise<string>;
 
 export const runnableJobs: Record<Job, JobExec> = {
   [Job.build]: build,

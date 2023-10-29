@@ -21,11 +21,9 @@ const Query = queryType({
     t.string("deploy", {
       args: {
         src: nonNull(stringArg()),
-        directory: nonNull(stringArg()),
         token: nonNull(stringArg()),
       },
-      resolve: async (_root, args, _ctx) =>
-        await deploy(args.src, args.directory, args.token),
+      resolve: async (_root, args, _ctx) => await deploy(args.src, args.token),
     });
   },
 });

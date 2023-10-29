@@ -7,7 +7,7 @@ export const build = gql`
 `;
 
 export const deploy = gql`
-  query Deploy($src: String!, $directory: String!, $token: String!) {
-    deploy(src: $src, directory: $directory, token: $token)
+  query Deploy($src: String!, $token: String!) {
+    deploy(src: $src, token: $token)
   }
 `;

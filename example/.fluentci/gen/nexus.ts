@@ -61,7 +61,6 @@ export interface NexusGenArgTypes {
       src: string; // String!
     }
     deploy: { // args
-      directory: string; // String!
       src: string; // String!
       token: string; // String!
     }
