@@ -33,12 +33,12 @@ export function generateYaml() {
         run: setupDagger,
       },
       {
-        name: "List Jobs",
-        run: "fluentci ls .",
+        name: "Run Dagger Pipelines",
+        run: "fluentci run . fmt lint test",
       },
       {
-        name: "Run Dagger Pipelines",
-        run: "fluentci run . fmt lint test codecov",
+        name: "Upload to Codecov",
+        run: "fluentci run codecov_pipeline",
         env: {
           CODECOV_TOKEN: "${{ secrets.CODECOV_TOKEN }}",
         },
