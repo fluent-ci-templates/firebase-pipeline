@@ -3,5 +3,6 @@
 
 
 type Query {
+  build(src: String!): String
   deploy(directory: String!, src: String!, token: String!): String
 }
