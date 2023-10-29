@@ -1,14 +1,14 @@
 import { JobSpec, Workflow } from "fluent_github_actions";
 
-export function generateYaml(): Workflow {
-  const workflow = new Workflow("Tests");
+export function generateYaml() {
+  const workflow = new Workflow("Codecov");
 
   const push = {
     branches: ["main"],
   };
 
   const setupDagger = `\
-  curl -L https://dl.dagger.io/dagger/install.sh | DAGGER_VERSION=0.8.1 sh
+  curl -L https://dl.dagger.io/dagger/install.sh | DAGGER_VERSION=0.8.8 sh
   sudo mv bin/dagger /usr/local/bin
   dagger version`;
 
@@ -16,12 +16,12 @@ export function generateYaml(): Workflow {
     "runs-on": "ubuntu-latest",
     steps: [
       {
-        uses: "actions/checkout@v3",
+        uses: "actions/checkout@v2",
       },
       {
         uses: "denoland/setup-deno@v1",
         with: {
-          "deno-version": "v1.36",
+          "deno-version": "v1.37",
         },
       },
       {
@@ -33,12 +33,20 @@ export function generateYaml(): Workflow {
         run: setupDagger,
       },
       {
+        name: "List Jobs",
+        run: "fluentci ls .",
+      },
+      {
         name: "Run Dagger Pipelines",
-        run: "dagger run fluentci deno_pipeline fmt lint test",
+        run: "fluentci run . fmt lint test codecov",
+        env: {
+          CODECOV_TOKEN: "${{ secrets.CODECOV_TOKEN }}",
+        },
       },
     ],
   };
 
   workflow.on({ push }).jobs({ tests });
-  return workflow;
+
+  workflow.save(".github/workflows/ci.yml");
 }
