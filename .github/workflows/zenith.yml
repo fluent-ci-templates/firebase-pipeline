@@ -16,9 +16,9 @@ jobs:
           curl -L https://dl.dagger.io/dagger/install.sh | DAGGER_VERSION=0.8.8 sh
           sudo mv bin/dagger /usr/local/bin
           dagger version
-      - name: Setup Shuttle API Key
+      - name: Setup Firebase Token
         run: |
-          sed -i "s/FIREBASE_TOKEN/$FIREBASE_TOKEN/g" example/deploy.gql
+          sed -i "s|FIREBASE_TOKEN|$FIREBASE_TOKEN|g" example/deploy.gql
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
       - name: Run Dagger Pipelines
