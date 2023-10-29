@@ -30,16 +30,13 @@ export const build = async (src = ".") => {
         client.cacheVolume("bun-cache")
       )
       .withMountedCache("/app/node_modules", client.cacheVolume("node_modules"))
+      .withMountedCache("/app/dist", client.cacheVolume("firebase-public"))
       .withDirectory("/app", context, { exclude })
       .withWorkdir("/app")
       .withExec(["bun", "install"])
-      .withExec(["bun", "run", "build"])
-      .withExec(["mkdir", "-p", "dist", "build"]);
+      .withExec(["bun", "run", "build"]);
 
     await ctr.stdout();
-
-    await ctr.directory("/app/dist").export("./dist");
-    await ctr.directory("/app/build").export("./build");
   });
   return "Done";
 };
@@ -54,6 +51,7 @@ export const deploy = async (src = ".", token?: string) => {
       .withExec(["apt-get", "update"])
       .withExec(["apt-get", "install", "-y", "ca-certificates"])
       .withExec(["pkgx", "install", "firebase"])
+      .withMountedCache("/app/dist", client.cacheVolume("firebase-public"))
       .withDirectory("/app", context)
       .withWorkdir("/app")
       .withEnvVariable(
