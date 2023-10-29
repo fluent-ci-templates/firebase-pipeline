@@ -4,7 +4,7 @@ name: Zenith Example
 on:
   push:
     branches:
-      - zenith
+      - main
 
 jobs:
   tests:
@@ -16,7 +16,13 @@ jobs:
           curl -L https://dl.dagger.io/dagger/install.sh | DAGGER_VERSION=0.8.8 sh
           sudo mv bin/dagger /usr/local/bin
           dagger version
+      - name: Setup Shuttle API Key
+        run: |
+          sed -i "s/FIREBASE_TOKEN/$FIREBASE_TOKEN/g" example/deploy.gql
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
       - name: Run Dagger Pipelines
         run: |
-          dagger query --doc hello.gql
+          dagger query --doc build.gql
+          dagger query --doc deploy.gql
         working-directory: example
