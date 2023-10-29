@@ -3,7 +3,7 @@ import { CircleCI, Job } from "fluent_circleci";
 export function generateYaml(): CircleCI {
   const circleci = new CircleCI();
 
-  const base = new Job().machine({ image: "ubuntu-2004:2023.07.1" }).steps([
+  const deploy = new Job().machine({ image: "ubuntu-2004:2023.07.1" }).steps([
     "checkout",
     {
       run: "sudo apt-get update && sudo apt-get install -y curl unzip",
@@ -26,12 +26,12 @@ dagger version`,
     {
       run: {
         name: "Run Dagger Pipelines",
-        command: "fluentci run .",
+        command: "fluentci run firebase_pipeline deploy",
       },
     },
   ]);
 
-  circleci.jobs({ base }).workflow("dagger", ["base"]);
+  circleci.jobs({ deploy }).workflow("dagger", ["deploy"]);
 
   return circleci;
 }

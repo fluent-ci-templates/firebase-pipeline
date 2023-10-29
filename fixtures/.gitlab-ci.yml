@@ -21,8 +21,8 @@
     - mv bin/dagger /usr/local/bin
     - dagger version
 
-base:
+deploy:
   extends: .dagger
   script:
-    - fluentci run .
+    - fluentci run firebase_pipeline deploy
 

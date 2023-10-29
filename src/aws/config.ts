@@ -15,7 +15,7 @@ export function generateYaml(): BuildSpec {
       ],
     })
     .phase("build", {
-      commands: ["fluentci run ."],
+      commands: ["fluentci run firebase_pipeline deploy"],
     })
     .phase("post_build", {
       commands: ["echo Build completed on `date`"],

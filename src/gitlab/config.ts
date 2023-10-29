@@ -23,10 +23,12 @@ export function generateYaml(): GitlabCI {
     `
   );
 
-  const base = new Job().extends(".dagger").script("fluentci run .");
+  const deploy = new Job()
+    .extends(".dagger")
+    .script("fluentci run firebase_pipeline deploy");
 
   return new GitlabCI()
     .addJob(".docker", docker)
     .addJob(".dagger", dagger)
-    .addJob("base", base);
+    .addJob("deploy", deploy);
 }

@@ -1,7 +1,7 @@
 import { JobSpec, Workflow } from "fluent_github_actions";
 
 export function generateYaml(): Workflow {
-  const workflow = new Workflow("base");
+  const workflow = new Workflow("deploy");
 
   const push = {
     branches: ["main"],
@@ -34,7 +34,10 @@ export function generateYaml(): Workflow {
       },
       {
         name: "Run Dagger Pipelines",
-        run: "fluentci run .",
+        run: "fluentci run firebase_pipeline deploy",
+        env: {
+          FIREBASE_TOKEN: "${{ secrets.FIREBASE_TOKEN }}",
+        },
       },
     ],
   };
