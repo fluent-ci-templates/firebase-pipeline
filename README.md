@@ -1,4 +1,4 @@
-# firebase Pipeline
+# Firebase Pipeline
 
 [![fluentci pipeline](https://img.shields.io/badge/dynamic/json?label=pkg.fluentci.io&labelColor=%23000&color=%23460cf1&url=https%3A%2F%2Fapi.fluentci.io%2Fv1%2Fpipeline%2Ffirebase_pipeline&query=%24.version)](https://pkg.fluentci.io/firebase_pipeline)
 ![deno compatibility](https://shield.deno.dev/deno/^1.37)
