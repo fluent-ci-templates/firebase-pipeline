@@ -15,7 +15,7 @@ export function generateYaml(): Workflow {
       },
       {
         name: "Setup Fluent CI",
-        run: "fluentci-io/setup-fluentci@v1",
+        uses: "fluentci-io/setup-fluentci@v1",
       },
       {
         name: "Run Dagger Pipelines",
