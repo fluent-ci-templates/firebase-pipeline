@@ -1,4 +1,6 @@
-import Client, { connect } from "../../deps.ts";
+import Client, { Directory } from "../../deps.ts";
+import { connect } from "../../sdk/connect.ts";
+import { getDirectory } from "./lib.ts";
 
 export enum Job {
   build = "build",
@@ -10,9 +12,9 @@ export const exclude = ["node_modules"];
 const NODE_VERSION = Deno.env.get("NODE_VERSION") || "18.16.1";
 const BUN_VERSION = Deno.env.get("BUN_VERSION") || "1.0.3";
 
-export const build = async (src = ".") => {
+export const build = async (src: string | Directory | undefined = ".") => {
   await connect(async (client: Client) => {
-    const context = client.host().directory(src);
+    const context = getDirectory(client, src);
     const ctr = client
       .pipeline(Job.build)
       .container()
@@ -41,9 +43,12 @@ export const build = async (src = ".") => {
   return "Done";
 };
 
-export const deploy = async (src = ".", token?: string) => {
+export const deploy = async (
+  src: string | Directory | undefined = ".",
+  token?: string
+) => {
   await connect(async (client: Client) => {
-    const context = client.host().directory(src);
+    const context = getDirectory(client, src);
     const ctr = client
       .pipeline(Job.deploy)
       .container()
