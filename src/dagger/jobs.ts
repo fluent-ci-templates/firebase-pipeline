@@ -1,6 +1,6 @@
-import Client, { Directory } from "../../deps.ts";
+import Client, { Directory, Secret } from "../../deps.ts";
 import { connect } from "../../sdk/connect.ts";
-import { getDirectory } from "./lib.ts";
+import { getDirectory, getFirebaseToken } from "./lib.ts";
 
 export enum Job {
   build = "build",
@@ -45,10 +45,16 @@ export const build = async (src: string | Directory | undefined = ".") => {
 
 export const deploy = async (
   src: string | Directory | undefined = ".",
-  token?: string
+  token?: string | Secret
 ) => {
   await connect(async (client: Client) => {
     const context = getDirectory(client, src);
+
+    const secret = getFirebaseToken(client, token);
+    if (!secret) {
+      throw new Error("Firebase token is not set");
+    }
+
     const ctr = client
       .pipeline(Job.deploy)
       .container()
@@ -59,16 +65,11 @@ export const deploy = async (
       .withMountedCache("/app/dist", client.cacheVolume("firebase-public"))
       .withDirectory("/app", context)
       .withWorkdir("/app")
-      .withEnvVariable(
-        "FIREBASE_TOKEN",
-        Deno.env.get("FIREBASE_TOKEN") || token!
-      )
+      .withSecretVariable("FIREBASE_TOKEN", secret)
       .withExec([
-        "firebase",
-        "deploy",
-        "--non-interactive",
-        "--token",
-        Deno.env.get("FIREBASE_TOKEN") || token!,
+        "bash",
+        "-c",
+        "firebase deploy --non-interactive --token $FIREBASE_TOKEN",
       ]);
 
     await ctr.stdout();
