@@ -52,7 +52,8 @@ export const deploy = async (
 
     const secret = getFirebaseToken(client, token);
     if (!secret) {
-      throw new Error("Firebase token is not set");
+      console.log("Firebase token is not set");
+      Deno.exit(1);
     }
 
     const ctr = client
