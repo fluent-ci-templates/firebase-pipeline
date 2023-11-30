@@ -12,7 +12,13 @@ export const exclude = ["node_modules"];
 const NODE_VERSION = Deno.env.get("NODE_VERSION") || "18.16.1";
 const BUN_VERSION = Deno.env.get("BUN_VERSION") || "1.0.3";
 
-export const build = async (src: string | Directory | undefined = ".") => {
+/**
+ * @function
+ * @description Build the project
+ * @param src {string | Directory | undefined}
+ * @returns {string}
+ */
+export async function build(src: string | Directory | undefined = ".") {
   await connect(async (client: Client) => {
     const context = getDirectory(client, src);
     const ctr = client
@@ -41,12 +47,19 @@ export const build = async (src: string | Directory | undefined = ".") => {
     await ctr.stdout();
   });
   return "Done";
-};
+}
 
-export const deploy = async (
+/**
+ * @function
+ * @description Deploy to Firebase Hosting
+ * @param src {string | Directory | undefined}
+ * @param token {string | Secret | undefined}
+ * @returns {string}
+ */
+export async function deploy(
   src: string | Directory | undefined = ".",
   token?: string | Secret
-) => {
+): Promise<string> {
   await connect(async (client: Client) => {
     const context = getDirectory(client, src);
 
@@ -77,7 +90,7 @@ export const deploy = async (
   });
 
   return "Done";
-};
+}
 
 export type JobExec = (src?: string, token?: string) => Promise<string>;
 
