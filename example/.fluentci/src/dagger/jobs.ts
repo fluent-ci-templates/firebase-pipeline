@@ -52,8 +52,8 @@ export async function build(src: string | Directory | undefined = ".") {
 /**
  * @function
  * @description Deploy to Firebase Hosting
- * @param src {string | Directory | undefined}
- * @param token {string | Secret | undefined}
+ * @param {string | Directory | undefined} src
+ * @param {string | Secret | undefined} token
  * @returns {string}
  */
 export async function deploy(
