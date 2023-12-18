@@ -16,9 +16,12 @@ const BUN_VERSION = Deno.env.get("BUN_VERSION") || "1.0.3";
  * @function
  * @description Build the project
  * @param src {string | Directory | undefined}
- * @returns {string}
+ * @returns {Promise<Directory | string>}
  */
-export async function build(src: string | Directory | undefined = ".") {
+export async function build(
+  src: string | Directory | undefined = "."
+): Promise<Directory | string> {
+  let id = "";
   await connect(async (client: Client) => {
     const context = getDirectory(client, src);
     const ctr = client
@@ -42,11 +45,13 @@ export async function build(src: string | Directory | undefined = ".") {
       .withDirectory("/app", context, { exclude })
       .withWorkdir("/app")
       .withExec(["bun", "install"])
-      .withExec(["bun", "run", "build"]);
+      .withExec(["bun", "run", "build"])
+      .withExec(["cp", "-r", "dist", "/dist"]);
 
     await ctr.stdout();
+    id = await ctr.directory("/dist").id();
   });
-  return "Done";
+  return id;
 }
 
 /**
@@ -60,6 +65,7 @@ export async function deploy(
   src: string | Directory | undefined = ".",
   token?: string | Secret
 ): Promise<string> {
+  let result = "";
   await connect(async (client: Client) => {
     const context = getDirectory(client, src);
 
@@ -86,13 +92,16 @@ export async function deploy(
         "firebase deploy --non-interactive --token $FIREBASE_TOKEN",
       ]);
 
-    await ctr.stdout();
+    result = await ctr.stdout();
   });
 
-  return "Done";
+  return result;
 }
 
-export type JobExec = (src?: string, token?: string) => Promise<string>;
+export type JobExec = (
+  src?: string,
+  token?: string
+) => Promise<Directory | string>;
 
 export const runnableJobs: Record<Job, JobExec> = {
   [Job.build]: build,
