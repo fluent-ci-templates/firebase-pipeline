@@ -36,13 +36,15 @@ dagger mod install github.com/fluent-ci-templates/firebase-pipeline@mod
 | build       | Build your project.                                        |
 | deploy      | Deploy to firebase hosting.                                |
 
-```graphql
-build(src: String!): String
+```typescript
+build(
+  src: string | Directory | undefined = "."
+): Promise<Directory | string>
 
 deploy(
-    src: String!, 
-    token: String!
-): String
+  src: string | Directory | undefined = ".",
+  token?: string | Secret
+): Promise<string>
 ```
 
 ## Programmatic usage
