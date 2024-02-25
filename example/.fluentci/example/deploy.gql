@@ -1,5 +1,0 @@
-{
-  firebase {
-    deploy(src: ".", directory: "dist", token: "FIREBASE_TOKEN")
-  }
-}
