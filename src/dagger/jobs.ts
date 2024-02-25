@@ -1,3 +1,8 @@
+/**
+ * @module firebase
+ * @description Build and deploy to Firebase Hosting
+ */
+
 import { Directory, Secret, dag } from "../../deps.ts";
 import { getDirectory, getFirebaseToken } from "./lib.ts";
 
