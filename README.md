@@ -19,7 +19,7 @@ fluentci run firebase_pipeline
 Use as a [Dagger](https://dagger.io) Module:
 
 ```bash
-dagger install github.com/fluent-ci-templates/firebase-pipeline@mod
+dagger install github.com/fluent-ci-templates/firebase-pipeline@main
 ```
 
 ## Environment Variables
