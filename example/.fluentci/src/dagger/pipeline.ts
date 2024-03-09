@@ -1,8 +1,8 @@
 import * as jobs from "./jobs.ts";
 
-const { build, deploy, runnableJobs, exclude } = jobs;
+const { build, deploy, runnableJobs } = jobs;
 
-export default async function pipeline(src = ".", args: string[] = []) {
+export default async function pipeline(_src = ".", args: string[] = []) {
   if (args.length > 0) {
     await runSpecificJobs(args as jobs.Job[]);
     return;

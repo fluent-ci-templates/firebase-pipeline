@@ -1,4 +1,9 @@
-import { Directory, Secret, dag } from "../../deps.ts";
+/**
+ * @module firebase
+ * @description Build and deploy to Firebase Hosting
+ */
+
+import { Directory, Secret, dag, exit, env } from "../../deps.ts";
 import { getDirectory, getFirebaseToken } from "./lib.ts";
 
 export enum Job {
@@ -8,8 +13,8 @@ export enum Job {
 
 export const exclude = ["node_modules"];
 
-const NODE_VERSION = Deno.env.get("NODE_VERSION") || "18.16.1";
-const BUN_VERSION = Deno.env.get("BUN_VERSION") || "1.0.25";
+const NODE_VERSION = env.get("NODE_VERSION") || "18.16.1";
+const BUN_VERSION = env.get("BUN_VERSION") || "1.0.25";
 
 /**
  * @function
@@ -20,7 +25,7 @@ const BUN_VERSION = Deno.env.get("BUN_VERSION") || "1.0.25";
 export async function build(
   src: string | Directory | undefined = "."
 ): Promise<Directory | string> {
-  const context = await getDirectory(dag, src);
+  const context = await getDirectory(src);
   const ctr = dag
     .pipeline(Job.build)
     .container()
@@ -38,9 +43,8 @@ export async function build(
     .withExec(["cp", "-r", "dist", "/output"]);
 
   await ctr.stdout();
-  const id = await ctr.directory("/output").id();
   await ctr.directory("/output/dist").export("dist");
-  return id;
+  return ctr.directory("/output").id();
 }
 
 /**
@@ -54,12 +58,13 @@ export async function deploy(
   src: string | Directory | undefined = ".",
   token?: string | Secret
 ): Promise<string> {
-  const context = await getDirectory(dag, src);
+  const context = await getDirectory(src);
 
-  const secret = await getFirebaseToken(dag, token);
+  const secret = await getFirebaseToken(token);
   if (!secret) {
     console.log("Firebase token is not set");
-    Deno.exit(1);
+    exit(1);
+    return "";
   }
 
   const ctr = dag
@@ -78,8 +83,7 @@ export async function deploy(
       "firebase deploy --non-interactive --token $FIREBASE_TOKEN",
     ]);
 
-  const result = await ctr.stdout();
-  return result;
+  return ctr.stdout();
 }
 
 export type JobExec = (
